@@ -114,6 +114,26 @@ def remover_astronauta():
         print(f"Houve um erro ao remover o astronauta: {e}")
         print("Tente novamente.")
 
+def atualizar_astronauta():
+    try:
+        nome = input("Digite o nome do astronauta: ")
+        astronauta = session.query(Astronauta).filter_by(nome=nome).first()
+        print(f"ID: {astronauta.id} Astronauta: {astronauta.nome} - Especialidades: {astronauta.especialidades}")
+        continuar = input("Deseja atualizar esse astronauta? (s/n): ")
+        
+        if astronauta and continuar.lower() == 's':
+            novo_nome = input("Digite o novo nome do astronauta: ")
+            especialidades = input("Digite as novas especialidades do astronauta: ")
+            astronauta.especialidades = especialidades
+            astronauta.nome = novo_nome
+            session.commit()
+            print(f'Astronauta {nome} atualizado com sucesso.')
+        else:
+            print(f'Astronauta {nome} não encontrado.')
+
+    except Exception as e:
+        print(f"Houve um erro ao atualizar o astronauta: {e}")
+        print("Tente novamente.")
 
 def consultar_astronautas():
     astronautas = session.query(Astronauta).all()
@@ -283,28 +303,24 @@ def adicionar_espaconave():
         modelo = input("Digite o modelo da espaçonave: ")
         capacidade_carga = input("Digite a capacidade de carga da espaçonave (em kg): ")
 
-        # Valida se a capacidade de carga é um número
         try:
             capacidade_carga = float(capacidade_carga)
         except ValueError:
             print("Erro: A capacidade de carga deve ser um número válido.")
             return
 
-        # Cria a nova espaçonave com os dados informados
         nova_espaconave = Espaconave(modelo=modelo, capacidade_carga=capacidade_carga)
 
-        # Adiciona e faz o commit para salvar no banco de dados
         session.add(nova_espaconave)
         session.commit()
 
-        # Exibe uma mensagem de sucesso
         print(f"A espaçonave '{nova_espaconave.modelo}' foi adicionada com sucesso ao banco de dados!")
     
     except Exception as e:
         print(f"Houve um erro ao adicionar a espaçonave: {e}")
         print("Tente novamente.")
 
-# Função para lançar a espaçonave com tratamento de exceção
+
 def lancar_espaconave():
     try:
         nome_missao = input("Digite o nome da missão para lançar a espaçonave: ")
@@ -420,55 +436,107 @@ def reportar_problema():
 
 def main():
     while True:
+        print("          ")
+        print("          ")
+        print("          ")
+        print("          ")
+        print("          ")
+        input("Enter para continuar")
+        print("          ")
+
         try:
             print("╔══════════════════════════════════════════════╗")
-            print("\n1 - Adicionar astronauta")
-            print("2 - Remover astronauta")
-            print("3 - Consultar Astronautas Cadastrados")
-            print("4 - Criar uma nova equipe")
-            print("5 - Consultar Equipes")
-            print("6 - Criar uma nova missão")
-            print("7 - Consultar Missoes")
-            print("8 - Consultar Participação em missão")
-            print("9 - Iniciar missão")
-            print("10 - Finalizar missão")
-            print("11 - Adicionar espaçonave")
-            print("12 - Lançar Espaçonave")
-            print("13 - Monitorar missão")
-            print("14 - Reportar problema")
-            print("\n╚══════════════════════════════════════════════╝")
+            print("                                                ")
+            print("1 - Gerenciar Astronautas")
+            print("2 - Gerenciar Equipes")
+            print("3 - Gerenciar Missoes")
+            print("6 - Gerenciar Aeronaves")
+            print("                                                ")
+            print("╚══════════════════════════════════════════════╝")
 
             escolha = input("Escolha uma opção: ")
 
             match escolha:
                 case '1':
-                    adicionar_astronauta()
-                case '2':
-                    remover_astronauta()
+                    print("\n1 - Adicionar astronauta")
+                    print("2 - Remover astronauta")
+                    print("3 - Consultar Astronautas Cadastrados")
+                    print("4 - Atualizar Astronauta")
+                    print("5 - Voltar")
+                    escolha_astronauta = input("Escolha uma opção: ")
+
+                    match escolha_astronauta:
+                        case '1':
+                            adicionar_astronauta()
+                        case '2':
+                            remover_astronauta()
+                        case '3':
+                            consultar_astronautas()
+                        case '4':
+                            atualizar_astronauta()
+                        case '5':
+                            main()
+                        case _:
+                            print("Opção inválida. Tente novamente.")
+                case '2': 
+                    print("\n1 - Adicionar Equipe")
+                    print("2 - Listar Equipes")
+                    print("3 - Voltar")
+                    escolha_equipe = input("Escolha uma opção: ")
+
+                    match escolha_equipe:
+                        case '1':
+                            criar_equipe()
+                        case '2':
+                            listar_equipes()
+                        case '3':
+                            main()
+                        case _:
+                            print("Opção inválida. Tente novamente.")
                 case '3':
-                    consultar_astronautas()
+                    print("\n1 - Criar missão")
+                    print("2 - Listar missoes")
+                    print("3 - Consultar missão e participantes")
+                    print("4 - Iniciar missão")
+                    print("5 - Finalizar missão")
+                    print("6 - Monitorar missao")
+                    print("7 - Voltar")
+                    escolha_missoes = input("Escolha uma opção: ")
+
+                    match escolha_missoes:
+                        case '1':
+                            criar_missao()
+                        case '2':
+                            consultar_missoes()
+                        case '3':
+                            consultar_participacao_missao()
+                        case '4':
+                            iniciar_missao()
+                        case '5':
+                            finalizar_missao()
+                        case '6':
+                            monitorar_missao()
+                        case '7':
+                            main()
+                        case _:
+                            print("Opção inválida. Tente novamente.") 
                 case '4':
-                    criar_equipe()
-                case '5':
-                    listar_equipes()
-                case '6':
-                    criar_missao()
-                case '7':
-                    consultar_missoes()
-                case '8':
-                    consultar_participacao_missao()
-                case '9':
-                    iniciar_missao()
-                case '10':
-                    finalizar_missao()
-                case '11':
-                    adicionar_espaconave()
-                case '12':
-                    lancar_espaconave()
-                case '13':
-                    monitorar_missao()
-                case '14':
-                    reportar_problema()
+                    print("\n1 - Adicionar Espaçonave")
+                    print("2 - Lançar Espaçonave")
+                    print("3 - Reportar Problema")
+                    print("4 - Voltar")
+
+                    escolha_epaconave = input("Escolha uma opção: ")
+
+                    match escolha_epaconave:
+                        case '1':
+                            adicionar_espaconave()
+                        case '2':
+                            lancar_espaconave()
+                        case '3':
+                            reportar_problema()
+                        case _:
+                            print("Opção inválida. Tente novamente.")
                 case _:
                     print("Opção inválida. Tente novamente.")
         
@@ -478,3 +546,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
